@@ -2,31 +2,29 @@ import { useRouter } from 'expo-router';
 import { Calendar, ChevronDown, ChevronLeft } from 'lucide-react-native';
 import React, { useState } from 'react';
 import {
-    SafeAreaView,
-    ScrollView,
-    StatusBar,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View
 } from 'react-native';
 
 const COLORS = {
-  primary: '#D98989', // Warna Pink/Salmon tombol & tab
+  primary: '#D98989',
   textMain: '#000000',
   textSecondary: '#A0A0A0',
   border: '#E0E0E0',
   bgInput: '#FFFFFF',
-  bgDisabled: '#EFEFEF', // Untuk field 'Type'
+  bgDisabled: '#EFEFEF',
   bgScreen: '#FFFFFF'
 };
 
 export default function AddTransactionScreen() {
-  // State untuk Tab (Income vs Expenditure)
   const [activeTab, setActiveTab] = useState<'Income' | 'Expenditure'>('Income');
   
-  // State Form (Dummy untuk UI)
   const [date, setDate] = useState('');
   const [amount, setAmount] = useState('');
   const [note, setNote] = useState('');
@@ -45,7 +43,6 @@ export default function AddTransactionScreen() {
           <ChevronLeft color="#000" size={24} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>{activeTab}</Text> 
-        {/* Title berubah dynamic ikut tab, atau bisa di-hardcode 'Income' jika mau statis */}
         <View style={{ width: 24 }} /> 
       </View>
 
@@ -105,7 +102,6 @@ export default function AddTransactionScreen() {
           <Text style={styles.label}>Wallet</Text>
           <TouchableOpacity style={styles.inputWrapper}>
             <Text style={styles.placeholderText}>Select Wallet</Text> 
-            {/* Ganti Text ini dengan state wallet terpilih nanti */}
             <ChevronDown color="#000" size={20} style={styles.inputIcon} />
           </TouchableOpacity>
         </View>
