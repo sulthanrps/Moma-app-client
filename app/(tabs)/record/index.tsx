@@ -20,7 +20,7 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
-import DeleteModal from '../../components/DeleteModal';
+import DeleteModal from '../../../components/DeleteModal';
 
 const MOCK_DATA = [
   {
@@ -142,7 +142,7 @@ export default function TransactionHistoryScreen() {
                 style={styles.iconBtn}
                 onPress={() => {
                   router.push({
-                    pathname: '/edit-transaction',
+                    pathname: '/(tabs)/record/edit-transaction',
                     params: {
                       id: item.id,
                       name: item.name,
@@ -195,7 +195,7 @@ export default function TransactionHistoryScreen() {
 
       <TouchableOpacity 
         style={styles.fab}
-        onPress={() => router.push('/add-transaction')}
+        onPress={() => router.push('/(tabs)/record/add-transaction')}
       >
         <Plus color="#FFF" size={32} />
       </TouchableOpacity>

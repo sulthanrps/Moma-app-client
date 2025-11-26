@@ -15,8 +15,8 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 
 const COLORS = {
   primary: '#FF9F9F', 
-  secondary: '#8F80F8', // Ungu
-  tertiary: '#56CCF2', // Biru Cyan
+  secondary: '#8F80F8',
+  tertiary: '#56CCF2', 
   bgScreen: '#FFFFFF',
   textMain: '#000000',
   textGray: '#888888',
@@ -24,7 +24,7 @@ const COLORS = {
 
 export default function ReportScreen() {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<'Income' | 'Expenditure'>('Expenditure'); // Default ke Expenditure biar langsung kelihatan fix-nya
+  const [activeTab, setActiveTab] = useState<'Income' | 'Expenditure'>('Income');
 
   // --- DATA DUMMY ---
   const incomeData = [
@@ -32,8 +32,8 @@ export default function ReportScreen() {
       name: "Daily Income",
       population: 3000000,
       color: COLORS.primary,
-      legendFontColor: "transparent", // RAHASIA 1: Sembunyikan label bawaan
-      legendFontSize: 0               // RAHASIA 2: Nol-kan ukurannya
+      legendFontColor: "transparent", 
+      legendFontSize: 0  
     }
   ];
 
@@ -42,7 +42,7 @@ export default function ReportScreen() {
       id: '1',
       name: "Household",
       population: 145000,
-      color: COLORS.primary, // Pink
+      color: COLORS.primary, 
       icon: Home,
       legendFontColor: "transparent", 
       legendFontSize: 0
@@ -51,7 +51,7 @@ export default function ReportScreen() {
       id: '2',
       name: "Food",
       population: 125000,
-      color: COLORS.secondary, // Ungu
+      color: COLORS.secondary,
       icon: Coffee,
       legendFontColor: "transparent",
       legendFontSize: 0
@@ -60,18 +60,16 @@ export default function ReportScreen() {
       id: '3',
       name: "Transportation",
       population: 36000,
-      color: COLORS.tertiary, // Biru
+      color: COLORS.tertiary, 
       icon: Car,
       legendFontColor: "transparent",
       legendFontSize: 0
     }
   ];
 
-  // Pilih data berdasarkan Tab
   const chartData = activeTab === 'Income' ? incomeData : expenditureData;
   const totalValue = chartData.reduce((acc, item) => acc + item.population, 0);
 
-  // Helper format duit
   const formatCurrency = (amount: number) => {
     return `Rp ${amount.toLocaleString('id-ID')},00`;
   };
@@ -130,14 +128,12 @@ export default function ReportScreen() {
                   }}
                   accessor={"population"}
                   backgroundColor={"transparent"}
-                  paddingLeft={(SCREEN_WIDTH / 4).toString()} // Trik menengahkan chart
+                  paddingLeft={(SCREEN_WIDTH / 4).toString()}
                   absolute={false}
                   hasLegend={false} 
                 />
                 
-                {/* CENTER LABEL (Total Percentage) - Opsional */}
                 <View style={styles.centerLabel}>
-                   {/* Kalau mau ada teks di tengah chart, taruh sini */}
                 </View>
               </View>
             </View>
@@ -148,7 +144,7 @@ export default function ReportScreen() {
             {chartData.map((item, index) => {
                // Hitung Persentase
                const percentage = ((item.population / totalValue) * 100).toFixed(2);
-               const IconComponent = item.icon || Home; // Default icon
+               const IconComponent = item.icon || Home;
 
                return (
                  <View key={index} style={styles.listItem}>
@@ -211,7 +207,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     height: 220,
     width: '100%',
-    overflow: 'hidden' // Biar gak ada elemen keluar
+    overflow: 'hidden'
   },
   centerLabel: {
     position: 'absolute',
@@ -219,7 +215,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 
-  // LIST ITEM
   listDivider: { height: 1, backgroundColor: 'transparent', marginVertical: 0 },
   listItem: { 
     flexDirection: 'row', 
