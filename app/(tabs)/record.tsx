@@ -1,29 +1,27 @@
 import { format, parseISO } from 'date-fns';
-import { useRouter } from 'expo-router'; // Import Router
+import { useRouter } from 'expo-router';
 import {
-    Car,
-    ChevronLeft,
-    ChevronRight,
-    Coffee,
-    Edit2,
-    Home,
-    Plus,
-    Trash2
+  Car,
+  ChevronLeft,
+  ChevronRight,
+  Coffee,
+  Edit2,
+  Home,
+  Plus,
+  Trash2
 } from 'lucide-react-native';
 import React, { useState } from 'react';
 import {
-    SafeAreaView,
-    SectionList,
-    StatusBar,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View
+  SafeAreaView,
+  SectionList,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
 } from 'react-native';
-import DeleteModal from '../../components/DeleteModal'; // Import Modal yang baru dibuat
+import DeleteModal from '../../components/DeleteModal';
 
-// --- MOCK DATA ---
-// NOTE: Aku menambahkan field 'date' di dalam item supaya mudah dikirim ke halaman edit
 const MOCK_DATA = [
   {
     title: '2025-05-18',
@@ -51,23 +49,19 @@ export default function TransactionHistoryScreen() {
   const router = useRouter(); 
   const [currentDate, setCurrentDate] = useState(new Date(2025, 4, 1)); 
 
-  // --- STATE UNTUK DELETE MODAL ---
   const [isDeleteModalVisible, setDeleteModalVisible] = useState(false);
   const [selectedIdToDelete, setSelectedIdToDelete] = useState<string | null>(null);
 
-  // Fungsi saat tombol sampah ditekan
   const handleDeletePress = (id: string) => {
-    setSelectedIdToDelete(id); // Simpan ID yang mau dihapus
-    setDeleteModalVisible(true); // Munculkan modal
+    setSelectedIdToDelete(id); 
+    setDeleteModalVisible(true);
   };
 
-  // Fungsi saat tombol "Continue" di modal ditekan
   const onConfirmDelete = () => {
     console.log("Menghapus item dengan ID:", selectedIdToDelete);
-    // NANTI: Di sini kita panggil fungsi Supabase untuk delete data
     
-    setDeleteModalVisible(false); // Tutup modal
-    setSelectedIdToDelete(null); // Reset ID
+    setDeleteModalVisible(false); 
+    setSelectedIdToDelete(null); 
   };
 
   const renderHeader = () => (
@@ -144,11 +138,9 @@ export default function TransactionHistoryScreen() {
             <Text style={styles.amountText}>{formatCurrency(item.amount)}</Text>
             <View style={styles.actionIcons}>
               
-              {/* --- TOMBOL EDIT --- */}
               <TouchableOpacity 
                 style={styles.iconBtn}
                 onPress={() => {
-                  // Kirim data item ke halaman Edit lewat params
                   router.push({
                     pathname: '/edit-transaction',
                     params: {
@@ -166,7 +158,6 @@ export default function TransactionHistoryScreen() {
                 <Edit2 size={16} color="#Eab308" />
               </TouchableOpacity>
 
-              {/* --- TOMBOL DELETE --- */}
               <TouchableOpacity 
                 style={styles.iconBtn}
                 onPress={() => handleDeletePress(item.id)}
@@ -185,9 +176,9 @@ export default function TransactionHistoryScreen() {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
       
-      <View style={styles.topBar}>
+      {/* <View style={styles.topBar}>
         <Text style={styles.screenTitle}>Riwayat Transaksi</Text>
-      </View>
+      </View> */}
 
       {renderHeader()}
       {renderSummary()}
@@ -202,7 +193,6 @@ export default function TransactionHistoryScreen() {
         showsVerticalScrollIndicator={false}
       />
 
-      {/* FAB ADD BUTTON */}
       <TouchableOpacity 
         style={styles.fab}
         onPress={() => router.push('/add-transaction')}
@@ -210,7 +200,6 @@ export default function TransactionHistoryScreen() {
         <Plus color="#FFF" size={32} />
       </TouchableOpacity>
 
-      {/* --- MODAL KOMPONEN --- */}
       <DeleteModal 
         visible={isDeleteModalVisible}
         onClose={() => setDeleteModalVisible(false)}
@@ -224,7 +213,7 @@ export default function TransactionHistoryScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#ffffffff',
   },
   topBar: {
     paddingHorizontal: 20,
