@@ -18,10 +18,20 @@ export default function RootLayout() {
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
         <Stack.Screen 
-          name="addTransaction" 
+          name="add-transaction" 
+          options={{ 
+            headerShown: false, 
+            presentation: 'modal', 
+            animation: 'slide_from_bottom'
+          }} 
+        />
+
+        <Stack.Screen 
+          name="edit-transaction" 
           options={{ 
             presentation: 'modal',
-            headerShown: false 
+            headerShown: false,
+            animation: 'slide_from_bottom'
           }} 
         />
       </Stack>
