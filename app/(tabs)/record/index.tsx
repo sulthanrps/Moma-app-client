@@ -175,10 +175,6 @@ export default function TransactionHistoryScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
-      
-      {/* <View style={styles.topBar}>
-        <Text style={styles.screenTitle}>Riwayat Transaksi</Text>
-      </View> */}
 
       {renderHeader()}
       {renderSummary()}

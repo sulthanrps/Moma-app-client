@@ -20,11 +20,10 @@ const COLORS = {
   textMain: '#000000',
   textSecondary: '#A0A0A0',
   bgScreen: '#FFFFFF',
-  bgInput: '#F5F5F5', // Abu-abu muda untuk input pill
+  bgInput: '#F5F5F5', 
   arrowColor: '#FF8C90',
 };
 
-// --- MOCK CATEGORIES ---
 const CATEGORIES = [
   { id: '1', name: 'Food', icon: Coffee },
   { id: '2', name: 'Transport', icon: Car },
@@ -36,16 +35,14 @@ export default function ReviewTransactionScreen() {
   const router = useRouter();
   const params = useLocalSearchParams();
 
-  // State
   const [note, setNote] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState(CATEGORIES[0]); // Default Food
+  const [selectedCategory, setSelectedCategory] = useState(CATEGORIES[0]); 
   const [showCategoryPicker, setShowCategoryPicker] = useState(false);
 
-  // Data dari halaman sebelumnya
   const amount = parseInt(params.amount?.toString() || '0', 10);
   const walletName = params.wallet?.toString() || 'Daily budget wallet';
   const bankName = params.bank?.toString() || 'BCA';
-  const recipientName = "Adelia Kusumawati"; // Mock Name
+  const recipientName = "Adelia Kusumawati"; 
 
   const formatRupiah = (num: number) => {
     return `Rp ${num.toLocaleString('id-ID')}`;
@@ -63,7 +60,7 @@ export default function ReviewTransactionScreen() {
         amount: amount, 
         bank: bankName,
         wallet: walletName,
-        acc: params.acc // Bawa terus nomor rekeningnya
+        acc: params.acc 
       }
     });
   };
@@ -72,7 +69,6 @@ export default function ReviewTransactionScreen() {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
 
-      {/* HEADER */}
       <View style={styles.header}>
         <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
           <ChevronLeft color="#000" size={24} />
@@ -83,10 +79,8 @@ export default function ReviewTransactionScreen() {
 
       <View style={styles.content}>
         
-        {/* --- FLOW SECTION (FROM -> TO) --- */}
         <View style={styles.flowContainer}>
             
-            {/* FROM */}
             <View style={styles.flowItem}>
                 <View style={styles.iconCirclePurple}>
                     <User size={20} color="#8F80F8" />
@@ -94,16 +88,13 @@ export default function ReviewTransactionScreen() {
                 <Text style={styles.flowText}>{walletName}</Text>
             </View>
 
-            {/* ARROW CONNECTOR */}
             <View style={styles.connectorContainer}>
                 <View style={styles.dotsLine} />
                 <ArrowDown size={20} color={COLORS.arrowColor} />
             </View>
 
-            {/* TO */}
             <View style={styles.flowItem}>
                 <View style={styles.iconCircleBlue}>
-                    {/* Placeholder Bank Icon */}
                     <Text style={{color:'#FFF', fontWeight:'bold'}}>{bankName[0]}</Text>
                 </View>
                 <View>
@@ -113,16 +104,13 @@ export default function ReviewTransactionScreen() {
             </View>
         </View>
 
-        {/* --- AMOUNT SECTION --- */}
         <View style={styles.amountRow}>
             <Text style={styles.amountLabel}>Amount</Text>
             <Text style={styles.amountValue}>{formatRupiah(amount)}</Text>
         </View>
 
-        {/* --- INPUTS SECTION (CATEGORY & NOTES) --- */}
         <View style={styles.inputRow}>
             
-            {/* 1. CATEGORY PILL */}
             <TouchableOpacity 
                 style={styles.categoryPill} 
                 onPress={() => setShowCategoryPicker(true)}
@@ -130,7 +118,6 @@ export default function ReviewTransactionScreen() {
                 <Text style={styles.categoryText}>{selectedCategory.name}</Text>
             </TouchableOpacity>
 
-            {/* 2. NOTES PILL */}
             <View style={styles.notePill}>
                 <TextInput
                     style={styles.noteInput}
@@ -144,15 +131,12 @@ export default function ReviewTransactionScreen() {
 
       </View>
 
-      {/* FOOTER BUTTON */}
       <View style={styles.footer}>
          <TouchableOpacity style={styles.payButton} onPress={handlePayNow}>
              <Text style={styles.payButtonText}>Pay Now</Text>
          </TouchableOpacity>
       </View>
 
-
-      {/* --- MODAL: CATEGORY PICKER --- */}
       <Modal visible={showCategoryPicker} transparent animationType="fade">
         <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} onPress={() => setShowCategoryPicker(false)}>
           <View style={styles.bottomSheet}>
@@ -200,7 +184,6 @@ const styles = StyleSheet.create({
 
   content: { padding: 20, flex: 1 },
 
-  // Flow Section
   flowContainer: { marginBottom: 40 },
   flowItem: { flexDirection: 'row', alignItems: 'center', marginBottom: 5 },
   iconCirclePurple: { width: 40, height: 40, borderRadius: 20, backgroundColor: '#EFEAFF', justifyContent: 'center', alignItems: 'center', marginRight: 15 },
@@ -211,12 +194,10 @@ const styles = StyleSheet.create({
   connectorContainer: { paddingLeft: 10, marginVertical: 5, marginBottom: 20, alignItems: 'flex-start' },
   dotsLine: { width: 1, height: 10, backgroundColor: 'transparent' }, 
 
-  // Amount
   amountRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 30 },
   amountLabel: { fontSize: 14, color: COLORS.textMain },
   amountValue: { fontSize: 18, fontWeight: 'bold', color: COLORS.textMain },
 
-  // Inputs
   inputRow: { flexDirection: 'row', gap: 10 },
   
   categoryPill: { 
@@ -237,12 +218,10 @@ const styles = StyleSheet.create({
   },
   noteInput: { fontSize: 14, color: COLORS.textMain, height: 45 },
 
-  // Footer
   footer: { padding: 20, paddingBottom: 30 },
   payButton: { backgroundColor: COLORS.primary, height: 50, borderRadius: 25, justifyContent: 'center', alignItems: 'center', elevation: 5, shadowColor: COLORS.primary, shadowOpacity: 0.3, shadowRadius: 5 },
   payButtonText: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
 
-  // Modal
   modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
   bottomSheet: { backgroundColor: '#fff', borderTopLeftRadius: 20, borderTopRightRadius: 20, padding: 20 },
   bottomSheetHandle: { width: 40, height: 4, backgroundColor: '#DDD', alignSelf: 'center', marginBottom: 20, borderRadius: 2 },

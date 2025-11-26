@@ -2,12 +2,12 @@ import { useRouter } from 'expo-router';
 import { ChevronLeft as BackIcon, Car, ChevronLeft, ChevronRight, Coffee, Home } from 'lucide-react-native';
 import React, { useState } from 'react';
 import {
-    Dimensions,
-    SafeAreaView, ScrollView, StatusBar,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View
+  Dimensions,
+  SafeAreaView, ScrollView, StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
 } from 'react-native';
 import { PieChart } from 'react-native-chart-kit';
 
@@ -25,8 +25,7 @@ const COLORS = {
 export default function ReportScreen() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<'Income' | 'Expenditure'>('Income');
-
-  // --- DATA DUMMY ---
+  
   const incomeData = [
     {
       name: "Daily Income",
@@ -78,7 +77,6 @@ export default function ReportScreen() {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
       
-      {/* HEADER */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
           <BackIcon color="#000" size={24} />
@@ -89,7 +87,6 @@ export default function ReportScreen() {
       
       <ScrollView contentContainerStyle={styles.scrollContent}>
         
-        {/* TOP SECTION */}
         <View style={styles.topSection}>
             <View style={styles.dateSelector}>
               <TouchableOpacity><ChevronLeft color="#000" size={20} /></TouchableOpacity>
@@ -115,7 +112,6 @@ export default function ReportScreen() {
             </View>
         </View>
 
-        {/* CHART SECTION */}
         <View style={styles.contentContainer}>
             <View style={styles.chartCard}>
               <View style={styles.chartWrapper}>
@@ -140,20 +136,16 @@ export default function ReportScreen() {
             
             <View style={styles.listDivider} />
             
-            {/* LIST ITEMS (LEGEND MANUAL) */}
             {chartData.map((item, index) => {
-               // Hitung Persentase
                const percentage = ((item.population / totalValue) * 100).toFixed(2);
                const IconComponent = item.icon || Home;
 
                return (
                  <View key={index} style={styles.listItem}>
-                    {/* Badge Persen */}
                     <View style={[styles.badgeContainer, { backgroundColor: item.color }]}>
                       <Text style={styles.badgeText}>{percentage}%</Text>
                     </View>
 
-                    {/* Icon & Nama */}
                     <View style={styles.itemMeta}>
                        {activeTab === 'Expenditure' && (
                          <IconComponent size={18} color="#000" style={{ marginRight: 8 }} />
@@ -161,7 +153,6 @@ export default function ReportScreen() {
                        <Text style={styles.itemName}>{item.name}</Text>
                     </View>
 
-                    {/* Nominal */}
                     <Text style={styles.itemAmount}>{formatCurrency(item.population)}</Text>
                  </View>
                );
@@ -188,7 +179,6 @@ const styles = StyleSheet.create({
   tabLabel: { fontSize: 12, color: COLORS.textMain, fontWeight: '600', marginBottom: 4 },
   tabValue: { fontSize: 14, color: COLORS.textMain, fontWeight: '400' },
   
-  // CHART
   contentContainer: { padding: 20 },
   chartCard: { 
     backgroundColor: '#FFF', 

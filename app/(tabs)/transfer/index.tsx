@@ -16,18 +16,16 @@ import {
 
 const { width } = Dimensions.get('window');
 
-// --- COLORS ---
 const COLORS = {
-  primary: '#D98989', // Pink Salmon
+  primary: '#D98989', 
   textMain: '#000000',
   textSecondary: '#A0A0A0',
   border: '#E0E0E0',
-  error: '#EF4444',   // Merah Error
+  error: '#EF4444',   
   bgInput: '#FFFFFF',
   bgScreen: '#FFFFFF',
 };
 
-// --- MOCK DATA BANKS ---
 const BANKS = [
   { id: '1', name: 'BCA', code: '014' },
   { id: '2', name: 'Mandiri', code: '008' },
@@ -39,21 +37,16 @@ const BANKS = [
 export default function TransferScreen() {
   const router = useRouter();
 
-  // --- STATE ---
   const [selectedBank, setSelectedBank] = useState<any>(null);
   const [accountNumber, setAccountNumber] = useState('');
   const [error, setError] = useState('');
   const [showBankPicker, setShowBankPicker] = useState(false);
 
-  // --- HANDLERS ---
   const handleNext = () => {
-    // Dismiss keyboard dulu biar rapi
     Keyboard.dismiss();
 
-    // 1. Reset Error
     setError('');
 
-    // 2. Validasi
     if (!accountNumber.trim()) {
       setError('The account number is not valid');
       return;
@@ -64,9 +57,7 @@ export default function TransferScreen() {
       return;
     }
 
-    // 3. Sukses
     console.log("Validasi Sukses. Data:", { bank: selectedBank.name, acc: accountNumber });
-    // router.push('/transfer-amount'); 
     router.push({
         pathname: '/(tabs)/transfer/amount',
         params: { 
@@ -85,13 +76,9 @@ export default function TransferScreen() {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
 
-      {/* FIX: TouchableWithoutFeedback
-         Ini trik supaya kalau user klik area kosong di luar input, keyboard turun.
-      */}
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={{ flex: 1 }}> 
           
-          {/* HEADER */}
           <View style={styles.header}>
             <TouchableOpacity style={styles.backButton}
               onPress={() => router.back()}>
@@ -103,13 +90,12 @@ export default function TransferScreen() {
 
           <View style={styles.content}>
             
-            {/* 1. BANK DESTINATION */}
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Choose Bank Destination</Text>
               <TouchableOpacity 
                 style={styles.inputWrapper} 
                 onPress={() => {
-                  Keyboard.dismiss(); // Tutup keyboard kalau mau buka modal
+                  Keyboard.dismiss(); 
                   setShowBankPicker(true);
                 }}
               >
@@ -125,7 +111,6 @@ export default function TransferScreen() {
               </TouchableOpacity>
             </View>
 
-            {/* 2. ACCOUNT NUMBER */}
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Input account number</Text>
               <View style={[
@@ -141,10 +126,8 @@ export default function TransferScreen() {
                 />
               </View>
               
-              {/* ERROR MESSAGE */}
               {error ? (
                 <View style={styles.errorContainer}>
-                  {/* Ikon alert opsional, bisa dihapus kalau ga perlu */}
                   <Text style={styles.errorText}>{error}</Text>
                 </View>
               ) : null}
@@ -152,7 +135,6 @@ export default function TransferScreen() {
 
           </View>
 
-          {/* BOTTOM BUTTON */}
           <View style={styles.footer}>
             <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
               <Text style={styles.nextButtonText}>Next</Text>
@@ -162,7 +144,6 @@ export default function TransferScreen() {
         </View>
       </TouchableWithoutFeedback>
 
-      {/* --- MODAL: BANK PICKER --- */}
       <Modal visible={showBankPicker} transparent animationType="fade">
         <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} onPress={() => setShowBankPicker(false)}>
           <View style={styles.bottomSheet}>
@@ -202,7 +183,6 @@ export default function TransferScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: COLORS.bgScreen },
   
-  // Header
   header: { 
     flexDirection: 'row', 
     alignItems: 'center', 
@@ -216,7 +196,6 @@ const styles = StyleSheet.create({
 
   content: { padding: 20, flex: 1 },
 
-  // Input Styles
   inputGroup: { marginBottom: 25 },
   label: { fontSize: 14, fontWeight: '500', color: COLORS.textMain, marginBottom: 10 },
   inputWrapper: { 
@@ -239,11 +218,9 @@ const styles = StyleSheet.create({
   
   selectedBankRow: { flex: 1, flexDirection: 'row', alignItems: 'center' },
 
-  // Error Text
   errorContainer: { flexDirection: 'row', alignItems: 'center', marginTop: 8 },
   errorText: { color: COLORS.error, fontSize: 12, fontWeight: '500' },
 
-  // Footer Button
   footer: { padding: 20, paddingBottom: 30 },
   nextButton: { 
     backgroundColor: COLORS.primary, 
@@ -259,7 +236,6 @@ const styles = StyleSheet.create({
   },
   nextButtonText: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
 
-  // Modal Styles
   modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
   bottomSheet: { backgroundColor: '#fff', borderTopLeftRadius: 20, borderTopRightRadius: 20, padding: 20, maxHeight: '60%' },
   bottomSheetHandle: { width: 40, height: 4, backgroundColor: '#DDD', borderRadius: 2, alignSelf: 'center', marginBottom: 20 },
