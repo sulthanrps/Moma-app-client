@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
   errorContainer: { flexDirection: 'row', alignItems: 'center', marginTop: 8 },
   errorText: { color: COLORS.error, fontSize: 12, fontWeight: '500' },
 
-  footer: { padding: 20, paddingBottom: 30 },
+  footer: { padding: 20, paddingBottom: 100 },
   nextButton: { 
     backgroundColor: COLORS.primary, 
     height: 50, 

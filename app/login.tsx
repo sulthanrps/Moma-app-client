@@ -1,9 +1,8 @@
+import { MomaLogo } from '@/components/MomaLogo';
 import { useRouter } from 'expo-router';
 import { Eye, EyeOff } from 'lucide-react-native';
 import React, { useState } from 'react';
-import { MomaLogo } from '@/components/MomaLogo';
 import {
-  Image,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -15,7 +14,7 @@ import {
 } from 'react-native';
 
 const COLORS = {
-  primary: '#D98989', // Warna tombol
+  primary: '#D98989',
   textMain: '#000000',
   textSecondary: '#A0A0A0',
   bgInput: '#FFFFFF',
