@@ -1,424 +1,251 @@
-import { Feather } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import { useRouter } from 'expo-router';
+import { Eye, EyeOff, LogOut, Monitor, PiggyBank, ShieldCheck, Wallet } from 'lucide-react-native'; // Tambah Eye
+import React, { useState } from 'react';
 import {
   Dimensions,
-  Image,
+  Image, Modal,
   SafeAreaView,
   ScrollView,
   StatusBar,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
-} from "react-native";
-import LogoutModal from "../../components/LogoutModal";
-import WalletCard from "../../components/WalletCard";
+  View
+} from 'react-native';
 
-const { width } = Dimensions.get("window");
+const { width } = Dimensions.get('window');
+
+const COLORS = {
+  primary: '#D98989', 
+  bgScreen: '#F8F9FA', 
+  textMain: '#000000',
+  textSecondary: '#666666',
+  
+  cardSecured: '#86D2A3', 
+  cardDaily: '#7F8CBE',   
+  cardSaving: '#AED581',  
+  cardSos: '#C98B8B',     
+};
 
 export default function HomeScreen() {
   const router = useRouter();
-  const [isLogoutModalOpen, setLogoutModalOpen] = useState(false);
-  const [isBalanceVisible, setBalanceVisible] = useState(true);
+  const [modalVisible, setModalVisible] = useState(false);
+  
+  const [isBalanceVisible, setIsBalanceVisible] = useState(true);
 
-  const handleLogoutClick = () => setLogoutModalOpen(true);
-  const handleCancel = () => setLogoutModalOpen(false);
-  const handleContinue = () => {
-    setLogoutModalOpen(false);
-    console.log("User logged out");
+  const handleLogoutConfirm = () => {
+    setModalVisible(false);
+    router.replace('/login');
+  };
+
+  const displayBalance = (amount: number, prefix = 'Rp') => {
+    if (isBalanceVisible) {
+      return `${prefix}${amount.toLocaleString('id-ID')}`;
+    }
+    return '••••••';
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor="#F5F6FA" />
-
-      <ScrollView
-        style={styles.scrollView}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}
-      >
-        <View style={styles.topArea}>
-          {/* --- Header --- */}
+    <View style={styles.container}>
+      <StatusBar barStyle="dark-content" backgroundColor="#F8F9FA" />
+      
+      <SafeAreaView style={styles.safeArea}>
+        <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+          
           <View style={styles.header}>
-            <View style={styles.profileSection}>
-              <View style={styles.avatarContainer}>
-                <Image
-                  source={{
-                    uri: "https://api.dicebear.com/7.x/avataaars/png?seed=Siti&backgroundColor=ffdfbf&clothing=collarAndSweater",
-                  }}
-                  style={styles.avatarImage}
-                  resizeMode="cover"
-                />
-              </View>
+            <View style={styles.userInfo}>
+              <Image 
+                source={{ uri: 'https://img.freepik.com/free-psd/3d-illustration-person-with-sunglasses_23-2149436188.jpg' }} 
+                style={styles.avatar} 
+              />
               <View>
-                <Text style={styles.greetingText}>Hai,</Text>
-                <Text style={styles.nameText}>Siti Kurnia</Text>
+                <Text style={styles.greeting}>Hai,</Text>
+                <Text style={styles.username}>Siti Kurnia</Text>
               </View>
             </View>
-
-            {/* Tombol Logout */}
-            <TouchableOpacity
-              onPress={handleLogoutClick}
-              style={styles.logoutButton}
-              activeOpacity={0.7}
-            >
-              <Feather name="log-out" size={16} color="red" />
+            
+            <TouchableOpacity style={styles.logoutButton} onPress={() => setModalVisible(true)}>
+              <LogOut size={16} color="#EF4444" style={{marginRight: 4}} />
               <Text style={styles.logoutText}>logout</Text>
             </TouchableOpacity>
           </View>
 
-          {/* --- Total Saldo Card --- */}
-          <View style={styles.balanceCard}>
-            <View style={styles.balanceContent}>
-              <View style={styles.balanceLabelContainer}>
-                <Image source={require("../../assets/images/money-bag.png")} />
-                <Text style={styles.balanceLabel}>Total Saldo</Text>
-              </View>
-              <Text style={styles.balanceAmount}>
-                {isBalanceVisible ? "Rp3.000.000,00" : "Rp ••••••••"}
-              </Text>
-            </View>
+          <View style={styles.mainCard}>
+             <View style={styles.mainCardLabel}>
+                <Text style={{fontSize: 20, marginRight: 5}}>💰</Text>
+                <Text style={styles.mainCardTitle}>Total Saldo</Text>
+             </View>
+             <Text style={styles.mainBalance}>
+               {isBalanceVisible ? 'Rp3.000.000,00' : '••••••••'}
+             </Text>
           </View>
 
-          {/* --- Stats Row --- */}
           <View style={styles.statsRow}>
-            {/* Daily Budget */}
-            <View style={styles.statCard}>
-              <View style={styles.statHeader}>
-                <Image
-                  source={require("../../assets/images/budget-pict.png")}
-                />
-                <Text style={styles.statTitle}>Daily budget used</Text>
-              </View>
-              <Text style={styles.statValue}>
-                Rp 0 <Text style={styles.statTotal}>/ Rp 80.000</Text>
-              </Text>
+             <View style={styles.statCard}>
+                <View style={{flexDirection: 'row', alignItems: 'center', marginBottom: 5}}>
+                   <Monitor size={16} color="#555" />
+                   <Text style={styles.statLabel}> Daily budget used</Text>
+                </View>
+                <Text style={styles.statValue}>
+                  {isBalanceVisible ? 'Rp 0' : '•••'} 
+                  <Text style={{color: '#AAA'}}> / {isBalanceVisible ? 'Rp 80.000' : '•••'}</Text>
+                </Text>
+             </View>
+
+             <View style={styles.statCard}>
+                <View style={{flexDirection: 'row', alignItems: 'center', marginBottom: 5}}>
+                   <Text style={{color: '#F87171', fontWeight: 'bold', marginRight: 4}}>SOS</Text>
+                   <Text style={styles.statLabel}>quota left</Text>
+                </View>
+                <Text style={styles.statValue}>0/3</Text>
+             </View>
+          </View>
+
+          <View style={styles.walletSection}>
+             <View style={styles.walletHeader}>
+                <Text style={styles.sectionTitle}>Wallets</Text>
+                
+                <TouchableOpacity onPress={() => setIsBalanceVisible(!isBalanceVisible)}>
+                  {isBalanceVisible ? (
+                    <Eye size={22} color="#000" />
+                  ) : (
+                    <EyeOff size={22} color="#000" />
+                  )}
+                </TouchableOpacity>
+             </View>
+
+             <View style={styles.gridContainer}>
+                
+                <TouchableOpacity 
+                  style={[styles.walletCard, { backgroundColor: COLORS.cardSecured }]}
+                  onPress={() => router.push('/allocation')}
+                >
+                   <View style={styles.walletIconBg}><ShieldCheck size={24} color="#FFF" /></View>
+                   <View style={{marginTop: 10}}>
+                      <Text style={styles.walletTitle}>Secured Budget</Text>
+                      <Text style={styles.walletAmount}>{displayBalance(0)}</Text>
+                      <Text style={styles.walletDesc}>Allocate your money here</Text>
+                   </View>
+                </TouchableOpacity>
+
+                <View style={[styles.walletCard, { backgroundColor: COLORS.cardDaily }]}>
+                   <View style={styles.walletHeaderRow}>
+                      <View style={styles.walletIconBg}><Wallet size={24} color="#FFF" /></View>
+                      <Text style={styles.quotaText}>1/30</Text>
+                   </View>
+                   <View style={{marginTop: 10}}>
+                      <Text style={styles.walletTitle}>Daily Budget</Text>
+                      <Text style={styles.walletAmount}>{displayBalance(2400000)}</Text>
+                      <Text style={styles.walletDesc}>Budget you can use in a day</Text>
+                   </View>
+                </View>
+
+                <View style={[styles.walletCard, { backgroundColor: COLORS.cardSaving }]}>
+                   <View style={styles.walletIconBg}><PiggyBank size={24} color="#FFF" /></View>
+                   <View style={{marginTop: 10}}>
+                      <Text style={styles.walletTitle}>Saving Wallet</Text>
+                      <Text style={styles.walletAmount}>{displayBalance(150000)}</Text>
+                      <Text style={styles.walletDesc}>Piggybank for saving money</Text>
+                   </View>
+                </View>
+
+                <View style={[styles.walletCard, { backgroundColor: COLORS.cardSos }]}>
+                   <View style={styles.walletIconBg}><Text style={{color:'#FFF', fontWeight:'900', fontSize: 16}}>SOS</Text></View>
+                   <View style={{marginTop: 10}}>
+                      <Text style={styles.walletTitle}>Emergency Money</Text>
+                      <Text style={styles.walletAmount}>{displayBalance(450000)}</Text>
+                      <Text style={styles.walletDesc}>Emergency-only budget</Text>
+                   </View>
+                </View>
+
+             </View>
+          </View>
+
+        </ScrollView>
+      </SafeAreaView>
+
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            
+            <View style={styles.logoutIconContainer}>
+               <LogOut size={40} color="#000" style={{ marginLeft: 5 }} /> 
             </View>
 
-            {/* SOS Quota */}
-            <View style={styles.quotaCard}>
-              <View style={styles.statHeader}>
-                <Image source={require("../../assets/images/sos-quota.png")} />
-                <Text style={styles.statTitle}>quota left</Text>
-              </View>
-              <Text style={styles.statValueLarge}>3/3</Text>
+            <Text style={styles.modalText}>Are you sure want to logout ?</Text>
+
+            <View style={styles.modalButtonRow}>
+              <TouchableOpacity 
+                style={styles.cancelButton} 
+                onPress={() => setModalVisible(false)}
+              >
+                <Text style={styles.cancelButtonText}>Cancel</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity 
+                style={styles.confirmButton} 
+                onPress={handleLogoutConfirm}
+              >
+                <Text style={styles.confirmButtonText}>Continue</Text>
+              </TouchableOpacity>
             </View>
+
           </View>
         </View>
+      </Modal>
 
-        <View style={styles.walletContainer}>
-          {/* --- Wallets Section --- */}
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Wallets</Text>
-            <TouchableOpacity
-              onPress={() => setBalanceVisible(!isBalanceVisible)}
-              style={styles.eyeButton}
-            >
-              {isBalanceVisible ? (
-                <Feather name="eye-off" size={20} color="black" />
-              ) : (
-                <Feather name="eye" size={20} color="black" />
-              )}
-            </TouchableOpacity>
-          </View>
-
-          {/* Grid Wallets */}
-          <View style={styles.gridContainer}>
-            <View style={styles.gridRow}>
-              {/* 1. Secured Budget (Green) */}
-              <View style={styles.gridItem}>
-                <WalletCard
-                  color="#81D5A2"
-                  icon={require("../../assets/images/secured-icon.png")}
-                  title="Secured Budget"
-                  amount={isBalanceVisible ? "Rp0" : "••••"}
-                  subtext="Remaining budget this month"
-                  // Langsung panggil onPress di sini
-                  onPress={() => router.push("../allocation")}
-                />
-              </View>
-
-              {/* 2. Daily Budget (Blue/Purple) */}
-              <View style={styles.gridItem}>
-                <WalletCard
-                  color="#8192D5"
-                  icon={require("../../assets/images/daily-icon.png")}
-                  title="Daily Budget"
-                  amount={isBalanceVisible ? "Rp2.400.000" : "••••"}
-                  subtext="Budget you can use in a day"
-                  badge="1/30"
-                />
-              </View>
-            </View>
-
-            <View style={styles.gridRow}>
-              {/* 3. Saving Wallet (Lime/Light Green) */}
-              <View style={styles.gridItem}>
-                <WalletCard
-                  color="#ACD581"
-                  icon={require("../../assets/images/saving-icon.png")}
-                  title="Saving Wallet"
-                  amount={isBalanceVisible ? "Rp150.000" : "••••"}
-                  subtext="Piggybank for saving money"
-                />
-              </View>
-
-              {/* 4. Emergency Money (Pink/Red) */}
-              <View style={styles.gridItem}>
-                <WalletCard
-                  color="#D58181"
-                  icon={require("../../assets/images/sos-icon.png")}
-                  title="Emergency Money"
-                  amount={isBalanceVisible ? "Rp450.000" : "••••"}
-                  subtext="Emergency-only budget"
-                />
-              </View>
-            </View>
-          </View>
-        </View>
-      </ScrollView>
-
-      {/* --- LOGOUT MODAL --- */}
-      <LogoutModal
-        visible={isLogoutModalOpen}
-        onClose={handleCancel}
-        onConfirm={handleContinue}
-      />
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#F5F6FA",
-  },
-  scrollView: {
-    flex: 1,
-    paddingTop: 8,
-  },
-  scrollContent: {
-    paddingBottom: 110,
-  },
-  topArea: {
-    paddingHorizontal: 24,
-  },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 24,
-    marginTop: 16,
-  },
-  profileSection: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-  },
-  avatarContainer: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: "#ffedd5", // orange-100
-    overflow: "hidden",
-    borderWidth: 1,
-    borderColor: "white",
-    // Shadow
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  avatarImage: {
-    width: "100%",
-    height: "100%",
-  },
-  greetingText: {
-    fontSize: 12,
-    color: "grey", // slate-400
-    fontWeight: "500",
-    marginBottom: 2,
-  },
-  nameText: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "black", // slate-800
-    lineHeight: 22,
-  },
-  logoutButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-    backgroundColor: "#FF9B9D",
-    borderWidth: 1,
-    borderColor: "black", // rose-300
-    paddingHorizontal: 5,
-    paddingVertical: 5,
-    borderRadius: 10,
-    // Shadow
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
-  },
-  logoutText: {
-    fontSize: 16,
-    fontWeight: "semibold",
-    color: "white", // rose-400
-    letterSpacing: 0.5,
-  },
-  balanceCard: {
-    backgroundColor: "white",
-    borderRadius: 20,
-    paddingVertical: 30,
-    paddingHorizontal: 24,
-    marginBottom: 20,
-    alignItems: "center",
-    justifyContent: "center",
-    position: "relative",
-    overflow: "hidden",
-    borderWidth: 1,
-    borderColor: "white",
-    // Shadow
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.05,
-    shadowRadius: 10,
-    elevation: 3,
-  },
-  balanceContent: {
-    alignItems: "center",
-    gap: 12,
-  },
-  balanceLabelContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-    opacity: 0.8,
-  },
-  balanceLabel: {
-    fontSize: 11,
-    fontWeight: "semibold",
-    color: "black", // slate-400
-    letterSpacing: 1.5,
-  },
-  balanceAmount: {
-    fontSize: 28,
-    fontWeight: "700",
-    color: "black", // slate-800
-    letterSpacing: -0.5,
-  },
-  statsRow: {
-    flexDirection: "row",
-    gap: 12,
-    marginBottom: 2,
-  },
-  statCard: {
-    width: "auto",
-    backgroundColor: "white",
-    paddingVertical: 12,
-    paddingHorizontal: 25,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: "white",
-    // Shadow
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.03,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  quotaCard: {
-    flex: 1,
-    backgroundColor: "white",
-    padding: 16,
-    gap: 0,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: "white",
-    // Shadow
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.03,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  statHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 2,
-    marginBottom: 12,
-  },
-  iconBox: {
-    backgroundColor: "#f1f5f9", // slate-100
-    padding: 6,
-    borderRadius: 8,
-  },
-  statTitle: {
-    fontSize: 12,
-    fontWeight: "semibold",
-    color: "black", // slate-400
-    flex: 1,
-    lineHeight: 14,
-  },
-  statValue: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "black", // slate-800
-  },
-  statTotal: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "black", // slate-300
-  },
-  sosBadge: {
-    backgroundColor: "#fff1f2", // rose-50
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 6,
-  },
-  statValueLarge: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "black", // slate-800
-  },
-  walletContainer: {
-    backgroundColor: "white",
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
-    padding: 10,
-    marginTop: 20,
-  },
-  sectionHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 20,
-    marginTop: 10,
-    paddingHorizontal: 10,
-  },
-  sectionTitle: {
-    fontSize: 23,
-    fontWeight: "700",
-    color: "black", // slate-800
-  },
-  eyeButton: {
-    padding: 4,
-  },
-  gridContainer: {
-    marginHorizontal: -6, // Compensate for item padding
-    backgroundColor: "white",
-  },
-  gridRow: {
-    flexDirection: "row",
-    marginBottom: 12,
-  },
-  gridItem: {
-    width: "50%",
-    paddingHorizontal: 8,
-    paddingVertical: 6,
-  },
+  container: { flex: 1, backgroundColor: COLORS.bgScreen },
+  safeArea: { flex: 1 },
+  scrollContent: { padding: 20, paddingBottom: 40 },
+
+  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 25 },
+  userInfo: { flexDirection: 'row', alignItems: 'center' },
+  avatar: { width: 50, height: 50, borderRadius: 25, marginRight: 12, backgroundColor: '#DDD' },
+  greeting: { fontSize: 14, color: '#666' },
+  username: { fontSize: 18, fontWeight: 'bold', color: '#000' },
+  logoutButton: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#FFE5E5', paddingVertical: 6, paddingHorizontal: 12, borderRadius: 8, borderWidth: 1, borderColor: '#FCA5A5' },
+  logoutText: { color: '#EF4444', fontWeight: 'bold', fontSize: 12 },
+
+  mainCard: { backgroundColor: '#FFF', padding: 25, borderRadius: 20, alignItems: 'center', marginBottom: 20, elevation: 2, shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 10, shadowOffset: {width:0, height:4} },
+  mainCardLabel: { flexDirection: 'row', alignItems: 'center', marginBottom: 10 },
+  mainCardTitle: { fontSize: 14, color: '#666', fontWeight: '500' },
+  mainBalance: { fontSize: 28, fontWeight: 'bold', color: '#000' },
+
+  statsRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 25 },
+  statCard: { backgroundColor: '#FFF', padding: 15, borderRadius: 15, width: '48%', elevation: 1 },
+  statLabel: { fontSize: 12, color: '#666' },
+  statValue: { fontSize: 16, fontWeight: 'bold', color: '#000' },
+
+  walletSection: { marginBottom: 20 },
+  walletHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 15 },
+  sectionTitle: { fontSize: 18, fontWeight: 'bold', color: '#000' },
+  gridContainer: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', rowGap: 15 },
+  
+  walletCard: { width: '48%', padding: 15, borderRadius: 12, minHeight: 140, justifyContent: 'space-between' },
+  walletHeaderRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' },
+  walletIconBg: { width: 40, height: 40, borderRadius: 12, backgroundColor: 'rgba(255,255,255,0.2)', justifyContent: 'center', alignItems: 'center', alignSelf: 'flex-start' },
+  quotaText: { color: '#FFF', fontWeight: 'bold', fontSize: 12 },
+  walletTitle: { color: '#FFF', fontWeight: 'bold', fontSize: 14, marginBottom: 2 },
+  walletAmount: { color: '#FFF', fontWeight: 'bold', fontSize: 12, marginBottom: 4 },
+  walletDesc: { color: '#FFF', fontSize: 10, opacity: 0.9, lineHeight: 14 },
+
+  modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.6)', justifyContent: 'center', alignItems: 'center' },
+  modalContent: { width: width * 0.8, backgroundColor: '#FFF', borderRadius: 20, padding: 25, alignItems: 'center', elevation: 5 },
+  logoutIconContainer: { marginBottom: 20 },
+  modalText: { fontSize: 16, fontWeight: 'bold', color: '#000', textAlign: 'center', marginBottom: 25 },
+  modalButtonRow: { flexDirection: 'row', width: '100%', justifyContent: 'space-between', gap: 15 },
+  cancelButton: { flex: 1, backgroundColor: '#333', paddingVertical: 12, borderRadius: 25, alignItems: 'center' },
+  cancelButtonText: { color: '#FFF', fontWeight: 'bold' },
+  confirmButton: { flex: 1, backgroundColor: '#F87171', paddingVertical: 12, borderRadius: 25, alignItems: 'center' },
+  confirmButtonText: { color: '#FFF', fontWeight: 'bold' },
 });

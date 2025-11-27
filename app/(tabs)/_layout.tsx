@@ -1,166 +1,108 @@
-import { HapticTab } from "@/components/haptic-tab";
-import { Tabs } from "expo-router";
-import React from "react";
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Tabs, usePathname } from 'expo-router';
+import {
+  FilePlus,
+  History,
+  Home,
+  LogOut,
+  Scan
+} from 'lucide-react-native';
+import React from 'react';
+import { Dimensions, Platform, StyleSheet, View } from 'react-native';
 
-// Color Palette based on the design
+const { width } = Dimensions.get('window');
+
 const COLORS = {
-  primary: "white", // Rose-400 (Active)
-  inactive: "white", // Slate-300 (Inactive)
-  bg: "#FF9B9D",
+  primary: '#D98989', 
+  active: '#FFFFFF',  
+  inactive: '#FFCacC',
+  bg: '#FFFFFF',
 };
 
 export default function TabLayout() {
+  const pathname = usePathname();
+
+  const hideTabBarRoutes = [
+    '/transfer/amount',
+    '/transfer/review',
+    '/transfer/pin',
+    '/record/add',  
+    '/record/edit', 
+    '/allocation',  
+    '/allocation/edit'
+  ];
+
+  const isTabBarHidden = hideTabBarRoutes.some(route => pathname.includes(route));
+
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: COLORS.primary,
+        tabBarShowLabel: true,
+        tabBarActiveTintColor: COLORS.active,
         tabBarInactiveTintColor: COLORS.inactive,
-        tabBarShowLabel: false, // We hide default labels to use custom styled ones below
-        tabBarStyle: styles.tabBar,
-        tabBarButton: HapticTab,
+        tabBarStyle: isTabBarHidden 
+          ? { display: 'none' } 
+          : styles.tabBar,
+        tabBarLabelStyle: styles.tabLabel,
       }}
     >
-      {/* 1. Home */}
+      {/* 1. HOME */}
       <Tabs.Screen
         name="index"
         options={{
-          title: "Home",
-          tabBarIcon: ({ focused }) => (
-            <Image
-              source={require("../../assets/images/home.png")} // Make sure this path is correct
-              style={{
-                width: 24,
-                height: 24,
-                tintColor: focused ? COLORS.primary : COLORS.inactive,
-              }}
-              resizeMode="contain"
-            />
-          ),
-          tabBarLabel: ({ focused }) => (
-            <Text
-              style={[
-                styles.label,
-                { color: focused ? COLORS.primary : COLORS.inactive },
-              ]}
-            >
-              Home
-            </Text>
+          title: 'Home',
+          tabBarIcon: ({ color, focused }) => (
+            <Home size={24} color={color} strokeWidth={2.5} />
           ),
         }}
       />
 
-      {/* 2. Report */}
+      {/* 2. REPORT */}
       <Tabs.Screen
-        name="report"
+        name="report" 
         options={{
-          title: "Report",
-          tabBarIcon: ({ focused }) => (
-            <Image
-              source={require("../../assets/images/report.png")} // Make sure this path is correct
-              style={{
-                width: 24,
-                height: 24,
-                tintColor: focused ? COLORS.primary : COLORS.inactive,
-              }}
-              resizeMode="contain"
-            />
-          ),
-          tabBarLabel: ({ focused }) => (
-            <Text
-              style={[
-                styles.label,
-                { color: focused ? COLORS.primary : COLORS.inactive },
-              ]}
-            >
-              Report
-            </Text>
+          title: 'Report',
+          tabBarIcon: ({ color }) => (
+            <History size={24} color={color} strokeWidth={2.5} />
           ),
         }}
       />
 
-      {/* 3. QRIS (Floating Button) */}
+      {/* 3. QRIS */}
       <Tabs.Screen
-        name="qris"
+        name="qris" 
         options={{
-          title: "QRIS",
-          // Custom container for the floating effect
+          title: 'QRIS',
           tabBarIcon: ({ focused }) => (
-            <View style={styles.qrisButton}>
-              <Image
-                source={require("../../assets/images/qris.png")} // Make sure this path is correct
-                style={{
-                  width: 28,
-                  height: 28,
-                  tintColor: "white", // Icon remains white on pink background
-                }}
-                resizeMode="contain"
-              />
+            <View style={styles.qrisButtonContainer}>
+              <View style={styles.qrisButton}>
+                <Scan size={30} color='#FFF' strokeWidth={2.5} />
+              </View>
             </View>
           ),
-          tabBarLabel: () => (
-            <Text style={[styles.label, { color: "#fda4af", marginTop: 20 }]}>
-              QRIS
-            </Text>
+          tabBarLabelStyle: styles.qrisLabel, 
+          tabBarStyle: { display: 'none' } 
+        }}
+      />
+
+      {/* 4. TRANSFER */}
+      <Tabs.Screen
+        name="transfer" 
+        options={{
+          title: 'Transfer',
+          tabBarIcon: ({ color }) => (
+            <LogOut size={24} color={color} strokeWidth={2.5} style={{ transform: [{ rotate: '0deg' }] }} />
           ),
         }}
       />
 
-      {/* 4. Transfer */}
+      {/* 5. RECORD */}
       <Tabs.Screen
-        name="transfer"
+        name="record" 
         options={{
-          title: "Transfer",
-          tabBarIcon: ({ focused }) => (
-            <Image
-              source={require("../../assets/images/transfer.png")} // Make sure this path is correct
-              style={{
-                width: 24,
-                height: 24,
-                tintColor: focused ? COLORS.primary : COLORS.inactive,
-              }}
-              resizeMode="contain"
-            />
-          ),
-          tabBarLabel: ({ focused }) => (
-            <Text
-              style={[
-                styles.label,
-                { color: focused ? COLORS.primary : COLORS.inactive },
-              ]}
-            >
-              Transfer
-            </Text>
-          ),
-        }}
-      />
-
-      {/* 5. Record */}
-      <Tabs.Screen
-        name="record"
-        options={{
-          title: "Record",
-          tabBarIcon: ({ focused }) => (
-            <Image
-              source={require("../../assets/images/record.png")} // Make sure this path is correct
-              style={{
-                width: 24,
-                height: 24,
-                tintColor: focused ? COLORS.primary : COLORS.inactive,
-              }}
-              resizeMode="contain"
-            />
-          ),
-          tabBarLabel: ({ focused }) => (
-            <Text
-              style={[
-                styles.label,
-                { color: focused ? COLORS.primary : COLORS.inactive },
-              ]}
-            >
-              Record
-            </Text>
+          title: 'Record',
+          tabBarIcon: ({ color }) => (
+            <FilePlus size={24} color={color} strokeWidth={2.5} />
           ),
         }}
       />
@@ -170,43 +112,55 @@ export default function TabLayout() {
 
 const styles = StyleSheet.create({
   tabBar: {
-    position: "absolute",
+    position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
-    height: 60, // Taller to accommodate the curve and spacing
-    backgroundColor: "#FF9B9D",
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
-    borderTopWidth: 0, // Remove default top line
-    // Shadow for iOS
-    shadowColor: "#000",
+    backgroundColor: COLORS.primary, 
+    height: Platform.OS === 'ios' ? 90 : 70, 
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    borderTopWidth: 0, 
+    elevation: 10, 
+    shadowColor: '#000', 
     shadowOffset: { width: 0, height: -2 },
     shadowOpacity: 0.1,
-    shadowRadius: 10,
-    // Elevation for Android
-    elevation: 10,
+    shadowRadius: 4,
+    paddingBottom: Platform.OS === 'ios' ? 25 : 10,
+    paddingTop: 10,
   },
-  label: {
+  tabLabel: {
     fontSize: 10,
-    fontWeight: "600",
+    fontWeight: '600',
+    marginTop: 0,
   },
-  qrisButton: {
-    position: "relative",
-    top: -25, // Move it up to float
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: "#fca5a5", // Rose-300
-    justifyContent: "center",
-    alignItems: "center",
-    borderWidth: 4,
-    borderColor: "#ffffff", // White border to blend with tab bar
-    // Shadow
-    shadowColor: "#fca5a5",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.5,
-    shadowRadius: 5,
+  qrisButtonContainer: {
+    top: -25,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 70,
+    height: 70,
+    borderRadius: 40,
+    backgroundColor: '#FFFFFF',
     elevation: 5,
   },
+  qrisButton: {
+    width: 55,
+    height: 55,
+    borderRadius: 30,
+    backgroundColor: COLORS.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+  },
+  qrisLabel: {
+    fontSize: 10,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+    marginTop: 15, 
+  }
 });

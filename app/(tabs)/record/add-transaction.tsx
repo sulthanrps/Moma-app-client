@@ -17,9 +17,8 @@ import { Calendar, DateData } from 'react-native-calendars'; // Library Kalender
 
 const { width } = Dimensions.get('window');
 
-// --- COLORS ---
 const COLORS = {
-  primary: '#D98989', // Pink Salmon
+  primary: '#D98989', 
   textMain: '#000000',
   textSecondary: '#A0A0A0',
   border: '#E0E0E0',
@@ -28,7 +27,6 @@ const COLORS = {
   successGreen: '#22C55E'
 };
 
-// --- MOCK DATA ---
 const WALLETS = [
   { id: '1', name: 'Daily Budget wallet', icon: User },
   { id: '2', name: 'Emergency wallet', icon: User },
@@ -45,38 +43,32 @@ export default function AddTransactionScreen() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<'Income' | 'Expenditure'>('Income');
   
-  // Form State
   const [date, setDate] = useState('');
   const [amount, setAmount] = useState('');
   const [note, setNote] = useState('');
   const [selectedWallet, setSelectedWallet] = useState<any>(null);
   const [selectedCategory, setSelectedCategory] = useState<any>(null);
 
-  // Modal Visibility State
   const [showCalendar, setShowCalendar] = useState(false);
   const [showWalletPicker, setShowWalletPicker] = useState(false);
   const [showCategoryPicker, setShowCategoryPicker] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
-  // --- HANDLERS ---
   const handleDayPress = (day: DateData) => {
-    setDate(day.dateString); // Format: YYYY-MM-DD
+    setDate(day.dateString);
     setShowCalendar(false);
   };
 
   const handleSave = () => {
-    // Validasi sederhana
     if (!amount) return; 
-    // Simulasi sukses
     setShowSuccessModal(true);
   };
 
   const handleFinish = () => {
     setShowSuccessModal(false);
-    router.back(); // Kembali ke halaman sebelumnya
+    router.back();
   };
 
-  // --- REUSABLE COMPONENT: SELECTION MODAL ---
   const SelectionModal = ({ visible, onClose, title, data, onSelect }: any) => (
     <Modal visible={visible} transparent animationType="fade">
       <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} onPress={onClose}>
@@ -141,7 +133,6 @@ export default function AddTransactionScreen() {
 
       <ScrollView contentContainerStyle={styles.formContainer} showsVerticalScrollIndicator={false}>
         
-        {/* 1. DATE FIELD */}
         <View style={styles.inputGroup}>
           <Text style={styles.label}>Date</Text>
           <TouchableOpacity style={styles.inputWrapper} onPress={() => setShowCalendar(true)}>
@@ -152,7 +143,6 @@ export default function AddTransactionScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* 2. AMOUNT FIELD */}
         <View style={styles.inputGroup}>
           <Text style={styles.label}>Amount</Text>
           <View style={styles.inputWrapper}>
@@ -166,7 +156,6 @@ export default function AddTransactionScreen() {
           </View>
         </View>
 
-        {/* 3. WALLET FIELD */}
         <View style={styles.inputGroup}>
           <Text style={styles.label}>Wallet</Text>
           <TouchableOpacity style={styles.inputWrapper} onPress={() => setShowWalletPicker(true)}>
@@ -177,7 +166,6 @@ export default function AddTransactionScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* 4. NOTE FIELD */}
         <View style={styles.inputGroup}>
           <Text style={styles.label}>Note</Text>
           <View style={styles.inputWrapper}>
@@ -189,7 +177,6 @@ export default function AddTransactionScreen() {
           </View>
         </View>
 
-        {/* 5. CATEGORY FIELD */}
         <View style={styles.inputGroup}>
           <Text style={styles.label}>Category</Text>
           <TouchableOpacity style={styles.inputWrapper} onPress={() => setShowCategoryPicker(true)}>
@@ -200,7 +187,6 @@ export default function AddTransactionScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* 6. TYPE FIELD (Read Only) */}
         <View style={styles.inputGroup}>
           <Text style={styles.label}>Type</Text>
           <View style={[styles.inputWrapper, styles.disabledInput]}>
@@ -208,14 +194,12 @@ export default function AddTransactionScreen() {
           </View>
         </View>
 
-        {/* ADD BUTTON */}
         <TouchableOpacity style={styles.addButton} onPress={handleSave}>
           <Text style={styles.addButtonText}>Add</Text>
         </TouchableOpacity>
 
       </ScrollView>
 
-      {/* --- MODAL: CALENDAR --- */}
       <Modal visible={showCalendar} transparent animationType="fade">
         <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} onPress={() => setShowCalendar(false)}>
           <View style={styles.calendarContainer}>
@@ -234,7 +218,6 @@ export default function AddTransactionScreen() {
         </TouchableOpacity>
       </Modal>
 
-      {/* --- MODAL: WALLET PICKER --- */}
       <SelectionModal 
         visible={showWalletPicker}
         onClose={() => setShowWalletPicker(false)}
@@ -243,7 +226,6 @@ export default function AddTransactionScreen() {
         onSelect={setSelectedWallet}
       />
 
-      {/* --- MODAL: CATEGORY PICKER --- */}
       <SelectionModal 
         visible={showCategoryPicker}
         onClose={() => setShowCategoryPicker(false)}
@@ -252,11 +234,9 @@ export default function AddTransactionScreen() {
         onSelect={setSelectedCategory}
       />
 
-      {/* --- MODAL: SUCCESS POPUP --- */}
       <Modal visible={showSuccessModal} transparent animationType="fade">
         <View style={styles.modalOverlay}>
           <View style={styles.successCard}>
-            {/* Icon Check Starburst Custom */}
             <View style={styles.successIconContainer}>
                <View style={styles.successCircle}>
                   <Check size={40} color={COLORS.successGreen} />
@@ -301,13 +281,10 @@ const styles = StyleSheet.create({
   addButton: { backgroundColor: COLORS.primary, borderRadius: 25, height: 50, justifyContent: 'center', alignItems: 'center', marginTop: 20, elevation: 5 },
   addButtonText: { color: '#fff', fontSize: 16, fontWeight: '600' },
 
-  // MODAL STYLES
   modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center', alignItems: 'center' },
   
-  // CALENDAR
   calendarContainer: { width: width - 40, backgroundColor: '#fff', borderRadius: 15, padding: 10, elevation: 5 },
 
-  // BOTTOM SHEET (WALLET/CATEGORY)
   bottomSheet: { width: '100%', backgroundColor: '#fff', borderTopLeftRadius: 20, borderTopRightRadius: 20, padding: 20, position: 'absolute', bottom: 0, maxHeight: '50%' },
   bottomSheetHandle: { width: 40, height: 4, backgroundColor: '#DDD', borderRadius: 2, alignSelf: 'center', marginBottom: 20 },
   bottomSheetTitle: { fontSize: 16, fontWeight: 'bold', marginBottom: 15 },
@@ -315,7 +292,6 @@ const styles = StyleSheet.create({
   optionIconContainer: { width: 40, height: 40, borderRadius: 20, backgroundColor: '#F0F0F5', justifyContent: 'center', alignItems: 'center', marginRight: 15 },
   optionText: { fontSize: 16, fontWeight: '500', color: '#333' },
 
-  // SUCCESS MODAL
   successCard: { width: width - 60, backgroundColor: '#fff', borderRadius: 20, padding: 30, alignItems: 'center', elevation: 10 },
   successIconContainer: { marginBottom: 20 },
   successCircle: { width: 80, height: 80, borderRadius: 40, borderWidth: 3, borderColor: COLORS.successGreen, justifyContent: 'center', alignItems: 'center', borderStyle: 'dashed' }, // Simple imitation of starburst

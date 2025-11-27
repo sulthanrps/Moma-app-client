@@ -4,7 +4,8 @@ import React, { useState } from 'react';
 import {
   Dimensions,
   FlatList,
-  Keyboard, KeyboardAvoidingView,
+  Keyboard,
+  KeyboardAvoidingView,
   Modal,
   Platform,
   SafeAreaView,
@@ -33,20 +34,19 @@ const WALLETS = [
   { id: '2', name: 'Emergency wallet', balance: 450000, type: 'emergency' },
 ];
 
-const EMERGENCY_USAGE_COUNT = 3; 
+const EMERGENCY_USAGE_COUNT = 3;
 const EMERGENCY_LIMIT = 3;
 
 export default function TransferAmountScreen() {
   const router = useRouter();
-  const params = useLocalSearchParams(); 
+  const params = useLocalSearchParams();
 
   const [amount, setAmount] = useState('');
-  const [selectedWallet, setSelectedWallet] = useState(WALLETS[0]); 
+  const [selectedWallet, setSelectedWallet] = useState(WALLETS[0]);
   const [showWalletPicker, setShowWalletPicker] = useState(false);
   const [showLimitModal, setShowLimitModal] = useState(false);
   const [error, setError] = useState('');
 
-  // --- LOGIC GANTI WALLET ---
   const handleWalletSelect = (wallet: any) => {
     if (wallet.type === 'emergency') {
       if (EMERGENCY_USAGE_COUNT >= EMERGENCY_LIMIT) {
@@ -55,20 +55,19 @@ export default function TransferAmountScreen() {
         return;
       }
     }
-    
+
     setSelectedWallet(wallet);
     setShowWalletPicker(false);
     setError('');
   };
 
-  // --- LOGIC NEXT ---
   const handleNext = () => {
     Keyboard.dismiss();
     const currentAmount = parseInt(amount || '0', 10);
-    
+
     if (currentAmount < 10000) {
-        setError('Minimum transfer is Rp 10.000');
-        return;
+      setError('Minimum transfer is Rp 10.000');
+      return;
     }
 
     if (currentAmount > selectedWallet.balance) {
@@ -76,20 +75,20 @@ export default function TransferAmountScreen() {
       return;
     }
 
-    console.log("Transfer Valid:", { 
-      to: params.bank, 
-      acc: params.acc, 
-      amount: currentAmount, 
-      wallet: selectedWallet.name 
+    console.log("Transfer Valid:", {
+      to: params.bank,
+      acc: params.acc,
+      amount: currentAmount,
+      wallet: selectedWallet.name
     });
-    
+
     router.push({
       pathname: '/(tabs)/transfer/review',
-      params: { 
-        bank: params.bank, 
-        acc: params.acc, 
-        amount: currentAmount, 
-        wallet: selectedWallet.name 
+      params: {
+        bank: params.bank,
+        acc: params.acc,
+        amount: currentAmount,
+        wallet: selectedWallet.name
       }
     });
   };
@@ -103,91 +102,84 @@ export default function TransferAmountScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
-      
-      {/* KeyboardAvoidingView: Mengatur tinggi layar saat keyboard muncul */}
-      <KeyboardAvoidingView 
+
+      <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{ flex: 1 }}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 50 : 0} 
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 50 : 0}
       >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={{ flex: 1 }}>
 
-            {/* HEADER (Fixed di Atas) */}
             <View style={styles.header}>
               <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
                 <ChevronLeft color="#000" size={24} />
               </TouchableOpacity>
               <Text style={styles.headerTitle}>Payment</Text>
-              <View style={{ width: 24 }} /> 
+              <View style={{ width: 24 }} />
             </View>
 
-            {/* CONTENT (Scrollable di Tengah) */}
-            <ScrollView 
+            <ScrollView
               contentContainerStyle={styles.scrollContent}
               keyboardShouldPersistTaps="handled"
             >
-              
-              {/* RECIPIENT INFO */}
+
               <View style={styles.recipientCard}>
-                 <View style={styles.bankIconPlaceholder}>
-                    <Text style={{fontWeight: 'bold', color: '#fff'}}>{params.bank ? params.bank[0] : 'B'}</Text> 
-                 </View>
-                 <View>
-                    <Text style={styles.recipientName}>Adella Kusumawati</Text>
-                    <Text style={styles.recipientBank}>{params.bank || 'BCA'} • {params.acc || '12345678'}</Text>
-                 </View>
+                <View style={styles.bankIconPlaceholder}>
+                  <Text style={{ fontWeight: 'bold', color: '#fff' }}>{params.bank ? params.bank[0] : 'B'}</Text>
+                </View>
+                <View>
+                  <Text style={styles.recipientName}>Adella Kusumawati</Text>
+                  <Text style={styles.recipientBank}>{params.bank || 'BCA'} • {params.acc || '12345678'}</Text>
+                </View>
               </View>
 
-              {/* INPUT NOMINAL */}
               <View style={styles.amountContainer}>
-                 <View style={styles.inputRow}>
-                    <Text style={styles.currencyPrefix}>Rp</Text>
-                    <TextInput
-                        style={styles.amountInput}
-                        value={amount} 
-                        onChangeText={handleAmountChange}
-                        placeholder="0"
-                        placeholderTextColor="#DDD"
-                        keyboardType="number-pad"
-                        autoFocus={true} 
-                    />
-                 </View>
-                 
-                 <View style={[styles.underline, error ? { backgroundColor: COLORS.error } : null]} />
-                 
-                 {error ? (
-                    <Text style={styles.errorText}>{error}</Text>
-                 ) : (
-                    <Text style={styles.helperText}>*Enter amount to be paid</Text>
-                 )}
+                <View style={styles.inputRow}>
+                  <Text style={styles.currencyPrefix}>Rp</Text>
+                  <TextInput
+                    style={styles.amountInput}
+                    value={amount}
+                    onChangeText={handleAmountChange}
+                    placeholder="0"
+                    placeholderTextColor="#DDD"
+                    keyboardType="number-pad"
+                    autoFocus={true}
+                  />
+                </View>
+
+                <View style={[styles.underline, error ? { backgroundColor: COLORS.error } : null]} />
+
+                {error ? (
+                  <Text style={styles.errorText}>{error}</Text>
+                ) : (
+                  <Text style={styles.helperText}>*Enter amount to be paid</Text>
+                )}
               </View>
 
-              {/* SOURCE WALLET SELECTOR */}
               <View style={styles.walletSelectorContainer}>
                 <View style={styles.walletSelectorLeftContainer}>
-                    <Text style={styles.fromText}>From</Text>
-                    <TouchableOpacity style={styles.walletBtn} onPress={() => {
-                    Keyboard.dismiss(); 
+                  <Text style={styles.fromText}>From</Text>
+                  <TouchableOpacity style={styles.walletBtn} onPress={() => {
+                    Keyboard.dismiss();
                     setShowWalletPicker(true);
-                    }}>
-                        <Text style={styles.walletBtnText}>{selectedWallet.name}</Text>
-                        <ChevronDown size={16} color="#000" />
-                    </TouchableOpacity>
+                  }}>
+                    <Text style={styles.walletBtnText}>{selectedWallet.name}</Text>
+                    <ChevronDown size={16} color="#000" />
+                  </TouchableOpacity>
                 </View>
-                 <Text style={styles.balanceText}>
-                   Rp {selectedWallet.balance.toLocaleString('id-ID')}
-                 </Text>
+                <Text style={styles.balanceText}>
+                  Rp {selectedWallet.balance.toLocaleString('id-ID')}
+                </Text>
               </View>
 
             </ScrollView>
 
-            {/* FOOTER (Fixed di Bawah Keyboard/Layar) */}
             <View style={styles.footer}>
-              <TouchableOpacity 
-                  style={[styles.nextButton, !amount ? styles.nextButtonDisabled : null]} 
-                  onPress={handleNext}
-                  disabled={!amount}
+              <TouchableOpacity
+                style={[styles.nextButton, !amount ? styles.nextButtonDisabled : null]}
+                onPress={handleNext}
+                disabled={!amount}
               >
                 <Text style={styles.nextButtonText}>Next</Text>
               </TouchableOpacity>
@@ -197,7 +189,6 @@ export default function TransferAmountScreen() {
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
 
-      {/* --- MODAL: WALLET PICKER --- */}
       <Modal visible={showWalletPicker} transparent animationType="fade">
         <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} onPress={() => setShowWalletPicker(false)}>
           <View style={styles.bottomSheet}>
@@ -208,18 +199,18 @@ export default function TransferAmountScreen() {
               keyExtractor={(item) => item.id}
               renderItem={({ item }) => (
                 <TouchableOpacity style={styles.walletOption} onPress={() => handleWalletSelect(item)}>
-                   <View style={styles.walletIconBg}>
-                      <Wallet size={20} color="#555" />
-                   </View>
-                   <View style={{flex: 1}}>
-                      <Text style={styles.walletName}>{item.name}</Text>
-                      {item.type === 'emergency' && (
-                          <Text style={styles.quotaText}>
-                              Usage: <Text style={{color: COLORS.error}}>{EMERGENCY_USAGE_COUNT}/3 used</Text>
-                          </Text>
-                      )}
-                   </View>
-                   <Text style={styles.walletBalance}>Rp {item.balance.toLocaleString('id-ID')}</Text>
+                  <View style={styles.walletIconBg}>
+                    <Wallet size={20} color="#555" />
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.walletName}>{item.name}</Text>
+                    {item.type === 'emergency' && (
+                      <Text style={styles.quotaText}>
+                        Usage: <Text style={{ color: COLORS.error }}>{EMERGENCY_USAGE_COUNT}/3 used</Text>
+                      </Text>
+                    )}
+                  </View>
+                  <Text style={styles.walletBalance}>Rp {item.balance.toLocaleString('id-ID')}</Text>
                 </TouchableOpacity>
               )}
             />
@@ -227,20 +218,19 @@ export default function TransferAmountScreen() {
         </TouchableOpacity>
       </Modal>
 
-      {/* --- MODAL: LIMIT WARNING --- */}
       <Modal visible={showLimitModal} transparent animationType="fade">
         <View style={styles.modalOverlay}>
-           <View style={styles.limitCard}>
-              <View style={styles.crossIconContainer}>
-                 <X size={50} color={COLORS.error} strokeWidth={4} />
-              </View>
-              <Text style={styles.limitMainText}>
-                You have reach your limit on using the Emergency budget!
-              </Text>
-              <TouchableOpacity style={styles.returnButton} onPress={() => setShowLimitModal(false)}>
-                 <Text style={styles.returnButtonText}>Return</Text>
-              </TouchableOpacity>
-           </View>
+          <View style={styles.limitCard}>
+            <View style={styles.crossIconContainer}>
+              <X size={50} color={COLORS.error} strokeWidth={4} />
+            </View>
+            <Text style={styles.limitMainText}>
+              You have reach your limit on using the Emergency budget!
+            </Text>
+            <TouchableOpacity style={styles.returnButton} onPress={() => setShowLimitModal(false)}>
+              <Text style={styles.returnButtonText}>Return</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </Modal>
 
@@ -254,10 +244,9 @@ const styles = StyleSheet.create({
   headerTitle: { fontSize: 18, fontWeight: '700' },
   backButton: { padding: 5, marginLeft: -5 },
 
-  // Scroll Content (Bagian tengah yang bisa digulir)
-  scrollContent: { 
+  scrollContent: {
     paddingHorizontal: 20,
-    paddingBottom: 20 
+    paddingBottom: 20
   },
 
   recipientCard: { flexDirection: 'row', alignItems: 'center', marginBottom: 30 },
@@ -265,12 +254,11 @@ const styles = StyleSheet.create({
   recipientName: { fontSize: 16, fontWeight: 'bold' },
   recipientBank: { fontSize: 14, color: COLORS.textSecondary },
 
-  // Amount Input
   amountContainer: { marginBottom: 30 },
   inputRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 5 },
   currencyPrefix: { fontSize: 32, fontWeight: 'bold', color: COLORS.textMain, marginRight: 5 },
-  amountInput: { flex: 1, fontSize: 32, fontWeight: 'bold', color: COLORS.textMain, padding: 0 }, 
-  
+  amountInput: { flex: 1, fontSize: 32, fontWeight: 'bold', color: COLORS.textMain, padding: 0 },
+
   underline: { height: 1, backgroundColor: '#E0E0E0', width: '100%', marginBottom: 8 },
   helperText: { fontSize: 12, color: COLORS.error },
   errorText: { fontSize: 12, color: COLORS.error, fontWeight: 'bold' },
@@ -281,19 +269,17 @@ const styles = StyleSheet.create({
   walletBtnText: { fontWeight: 'bold', fontSize: 14, borderBottomWidth: 4, borderBottomColor: COLORS.primary, paddingBottom: 4 },
   balanceText: { fontWeight: 'bold', fontSize: 14 },
 
-  // Footer Style (Tempat tombol Next)
   footer: {
     paddingHorizontal: 20,
-    paddingBottom: 20, // Padding bawah aman
+    paddingBottom: 10,
     paddingTop: 10,
-    backgroundColor: '#fff', // Biar konten ga tembus pandang di belakang tombol
+    backgroundColor: '#fff',
   },
 
   nextButton: { backgroundColor: COLORS.primary, height: 50, borderRadius: 25, justifyContent: 'center', alignItems: 'center', shadowColor: COLORS.primary, shadowOpacity: 0.3, shadowRadius: 5, elevation: 5 },
   nextButtonDisabled: { backgroundColor: '#E0E0E0', shadowOpacity: 0, elevation: 0 },
   nextButtonText: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
 
-  // Modal Styles
   modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
   bottomSheet: { backgroundColor: '#fff', borderTopLeftRadius: 20, borderTopRightRadius: 20, padding: 20 },
   bottomSheetHandle: { width: 40, height: 4, backgroundColor: '#DDD', alignSelf: 'center', marginBottom: 20, borderRadius: 2 },
@@ -309,7 +295,7 @@ const styles = StyleSheet.create({
   limitMainText: { fontSize: 14, textAlign: 'center', fontWeight: 'bold', color: '#000', marginBottom: 20, paddingHorizontal: 10 },
   returnButton: { backgroundColor: '#FF9F9F', paddingVertical: 10, paddingHorizontal: 30, borderRadius: 20 },
   returnButtonText: { color: '#fff', fontWeight: 'bold', fontSize: 14 },
-  walletSelectorLeftContainer : {
+  walletSelectorLeftContainer: {
     flexDirection: 'row'
   }
 });

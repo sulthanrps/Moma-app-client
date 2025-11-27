@@ -38,6 +38,14 @@ const MOCK_DATA = [
       { id: '5', date: '2025-05-17', category: 'Food', name: 'Pisang Goreng Hj Kadap', wallet: 'Daily Wallet', amount: 16000, type: 'expense', icon: 'coffee' },
       { id: '6', date: '2025-05-17', category: 'Transportation', name: 'Ojek ke Sigura - gura', wallet: 'Daily Wallet', amount: 9000, type: 'expense', icon: 'car' },
     ]
+  },
+  {
+    title: '2025-05-16',
+    data: [
+      { id: '4', date: '2025-05-17', category: 'Household', name: 'Beli Sapu Ijuk', wallet: 'Daily Wallet', amount: 15000, type: 'expense', icon: 'home' },
+      { id: '5', date: '2025-05-17', category: 'Food', name: 'Pisang Goreng Hj Kadap', wallet: 'Daily Wallet', amount: 16000, type: 'expense', icon: 'coffee' },
+      { id: '6', date: '2025-05-17', category: 'Transportation', name: 'Ojek ke Sigura - gura', wallet: 'Daily Wallet', amount: 9000, type: 'expense', icon: 'car' },
+    ]
   }
 ];
 
@@ -175,10 +183,6 @@ export default function TransactionHistoryScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
-      
-      {/* <View style={styles.topBar}>
-        <Text style={styles.screenTitle}>Riwayat Transaksi</Text>
-      </View> */}
 
       {renderHeader()}
       {renderSummary()}
@@ -346,8 +350,8 @@ const styles = StyleSheet.create({
   },
   fab: {
     position: 'absolute',
-    bottom: 30,
-    right: 20,
+    bottom: 100,
+    left: 20,
     width: 60,
     height: 60,
     borderRadius: 30,

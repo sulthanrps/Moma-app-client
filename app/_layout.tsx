@@ -1,86 +1,114 @@
-import { Tabs } from "expo-router";
+import { MomaLogo } from '@/components/MomaLogo';
+import { Stack, useRouter } from 'expo-router';
+import React, { useEffect, useState } from 'react';
+import { Dimensions, StatusBar, StyleSheet, Text, View } from 'react-native';
 
-import React from "react";
+const { width } = Dimensions.get('window');
 
-import { HapticTab } from "@/components/haptic-tab";
+const CustomSplashScreen = () => {
+  return (
+    <View style={splashStyles.container}>
+      <StatusBar barStyle="light-content" backgroundColor="#D98989" />
+      
+      <View style={splashStyles.logoContainer}>
+        <MomaLogo size={170} />
+      </View>
 
-import { IconSymbol } from "@/components/ui/icon-symbol";
+      <View style={splashStyles.textContainer}>
+        <Text style={splashStyles.brandName}>Moma</Text>
+        <Text style={splashStyles.tagline}>Your Personalized Money Management System</Text>
+      </View>
+    </View>
+  );
+};
 
-import { Colors } from "@/constants/theme";
+const splashStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#D98989',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  logoContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  textContainer: {
+    paddingBottom: 80, 
+    alignItems: 'center',
+    paddingHorizontal: 40,
+  },
+  brandName: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+    marginBottom: 10,
+    letterSpacing: 1,
+  },
+  tagline: {
+    fontSize: 14,
+    color: '#FFFFFF',
+    textAlign: 'center',
+    opacity: 0.9,
+    lineHeight: 20,
+  }
+});
 
-import { useColorScheme } from "@/hooks/use-color-scheme";
+export default function RootLayout() {
+  const [isShowSplash, setIsShowSplash] = useState(true);
+   const router = useRouter();
 
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsShowSplash(false);
+      router.navigate('/login');
+    }, 5000);
+
+    return () => clearTimeout(timer); 
+  }, []);
+
+  if (isShowSplash) {
+    return <CustomSplashScreen />;
+  }
 
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
-
-        headerShown: false,
-
-        tabBarButton: HapticTab,
-      }}
-    >
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: "Home",
-
-          tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="house.fill" color={color} />
-          ),
+    <Stack>
+      <Stack.Screen 
+        name="login" 
+        options={{ 
+          headerShown: false,
+          gestureEnabled: false 
+        }} 
+      />
+      <Stack.Screen 
+        name="register" 
+        options={{ 
+          headerShown: false,
+          gestureEnabled: false 
+        }} 
+      />
+      <Stack.Screen 
+        name="create-pin" 
+        options={{ 
+          headerShown: false,
+          gestureEnabled: false 
+        }} 
+      />
+      <Stack.Screen 
+        name="(tabs)" 
+        options={{ 
+          headerShown: false,
+          gestureEnabled: false 
+        }} 
+      />
+      <Stack.Screen 
+        name="allocation" 
+        options={{ 
+          headerShown: false,
         }}
       />
-
-      <Tabs.Screen
-        name="report"
-        options={{
-          title: "Report",
-
-          tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="clock.arrow.circlepath" color={color} />
-          ),
-        }}
-      />
-
-      <Tabs.Screen
-        name="qris"
-        options={{
-          title: "Qris",
-
-          tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="qrcode.viewfinder" color={color} />
-          ),
-        }}
-      />
-
-      <Tabs.Screen
-        name="transfer"
-        options={{
-          title: "Transfer",
-
-          tabBarIcon: ({ color }) => (
-            <IconSymbol
-              size={28}
-              name="rectangle.portrait.and.arrow.right"
-              color={color}
-            />
-          ),
-        }}
-      />
-
-      <Tabs.Screen
-        name="record"
-        options={{
-          title: "Record",
-
-          tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="doc.badge.plus" color={color} />
-          ),
-        }}
-      />
-    </Tabs>
+      
+    </Stack>
   );
 }
