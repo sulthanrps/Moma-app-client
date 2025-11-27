@@ -1,15 +1,18 @@
+import { MomaLogo } from '@/components/MomaLogo';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { MomaLogo } from '@/components/MomaLogo';
 import {
-  Image,
+  Alert,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
   SafeAreaView,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
-  View,
-  Alert // Kita pakai Alert dulu buat tes kalau Modal macet
+  TouchableWithoutFeedback,
+  View
 } from 'react-native';
 
 import { SuccessModal } from '@/components/SuccessModal';
@@ -27,14 +30,12 @@ export default function CreatePinScreen() {
   const [isModalVisible, setModalVisible] = useState(false);
   
   const handleEnter = () => {
-    console.log("PIN saat ini:", pin); // Cek di terminal
+    console.log("PIN saat ini:", pin); 
 
     if (pin.length === 6) {
-        // Jika 6 digit, buka modal
-        setModalVisible(true);
+       setModalVisible(true);
     } else {
-        // Jika kurang, kasih peringatan
-        Alert.alert("Error", `PIN harus 6 digit. Saat ini: ${pin.length}`);
+       Alert.alert("Error", `PIN harus 6 digit. Saat ini: ${pin.length}`);
     }
   };
 
@@ -57,32 +58,46 @@ export default function CreatePinScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-       {/* Tekan layar sembarang tempat untuk menutup keyboard jika menghalangi */}
-       <TouchableOpacity activeOpacity={1} style={styles.content} onPress={() => {}}>
-          
-          <MomaLogo size={170} />
+       {/* Gunakan TouchableWithoutFeedback untuk menutup keyboard saat klik area kosong */}
+       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <KeyboardAvoidingView 
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            style={styles.content}
+          >
+             
+             <View style={styles.logoContainer}>
+                <MomaLogo size={170} />
+             </View>
 
-          <Text style={styles.title}>Create a 6 digit PIN</Text>
-          <Text style={styles.subtitle}>Enter the 6 digit numbers</Text>
+             <View style={styles.textContainer}>
+                <Text style={styles.title}>Create a 6 digit PIN</Text>
+                <Text style={styles.subtitle}>Enter the 6 digit numbers</Text>
+             </View>
 
-          <View style={styles.pinContainer}>
-            {renderPinBoxes()}
-          </View>
+             {/* Container khusus untuk PIN dan Input */}
+             <View style={styles.pinInputWrapper}>
+                <View style={styles.pinContainer}>
+                  {renderPinBoxes()}
+                </View>
 
-          {/* Input yang menutupi area PIN agar mudah diklik */}
-          <TextInput
-            style={styles.hiddenInput}
-            keyboardType="number-pad"
-            maxLength={6}
-            onChangeText={setPin}
-            value={pin}
-            autoFocus={true} 
-          />
+                {/* Input Transparan yang menutupi area PIN */}
+                <TextInput
+                  style={styles.hiddenInput}
+                  keyboardType="number-pad"
+                  maxLength={6}
+                  onChangeText={setPin}
+                  value={pin}
+                  autoFocus={true} 
+                  caretHidden={true}
+                />
+             </View>
 
-          <TouchableOpacity style={styles.button} onPress={handleEnter}>
-             <Text style={styles.buttonText}>Enter</Text>
-          </TouchableOpacity>
-       </TouchableOpacity>
+             <TouchableOpacity style={styles.button} onPress={handleEnter}>
+                <Text style={styles.buttonText}>Enter</Text>
+             </TouchableOpacity>
+
+          </KeyboardAvoidingView>
+       </TouchableWithoutFeedback>
 
        <SuccessModal 
           visible={isModalVisible} 
@@ -95,24 +110,49 @@ export default function CreatePinScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: COLORS.bgScreen },
-  content: { flex: 1, padding: 24, alignItems: 'center', justifyContent: 'center' },
-  iconWrapper: { marginBottom: 30 },
-  logo: { width: 120, height: 120, resizeMode: 'contain' },
+  content: { 
+    flex: 1, 
+    padding: 24, 
+    alignItems: 'center', 
+    justifyContent: 'center' // Ini akan menengahkan konten secara vertikal
+  },
+  logoContainer: {
+    marginBottom: 30,
+    alignItems: 'center',
+  },
+  textContainer: {
+    alignItems: 'center',
+    marginBottom: 40,
+  },
   title: { fontSize: 24, fontWeight: 'bold', color: COLORS.textMain, marginBottom: 10 },
-  subtitle: { fontSize: 14, color: COLORS.textSecondary, marginBottom: 40 },
-  pinContainer: { flexDirection: 'row', justifyContent: 'space-between', width: '100%', marginBottom: 50 },
+  subtitle: { fontSize: 14, color: COLORS.textSecondary },
+  
+  // Wrapper untuk memastikan input berada di posisi yang sama dengan kotak PIN
+  pinInputWrapper: {
+    width: '100%',
+    marginBottom: 50,
+    position: 'relative', // Penting untuk positioning absolute anak-anaknya
+    height: 60, // Tinggi area PIN
+    justifyContent: 'center',
+  },
+  pinContainer: { 
+    flexDirection: 'row', 
+    justifyContent: 'space-between', 
+    width: '100%', 
+  },
   pinBox: { width: 45, height: 55, borderRadius: 12, backgroundColor: '#FFFFFF', borderWidth: 1, borderColor: '#E0E0E0', justifyContent: 'center', alignItems: 'center' },
   pinBoxFilled: { borderColor: COLORS.primary, backgroundColor: '#FFF0F0' },
   dot: { width: 12, height: 12, borderRadius: 6, backgroundColor: COLORS.primary },
-  // Ubah style hidden input agar pasti berada di atas kotak PIN
+  
+  // Style Input Rahasia yang diperbaiki
   hiddenInput: { 
     position: 'absolute', 
     width: '100%', 
-    height: 100, 
-    top: '40%', // Sesuaikan biar pas di area kotak PIN
-    opacity: 0,
-    zIndex: 10 // Pastikan di layer paling atas
+    height: '100%', 
+    opacity: 0, // Tetap invisible
+    zIndex: 10, // Pastikan di atas
   },
+  
   button: { backgroundColor: COLORS.primary, width: '100%', height: 55, borderRadius: 25, justifyContent: 'center', alignItems: 'center', shadowColor: COLORS.primary, shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 5, elevation: 5 },
   buttonText: { color: 'white', fontSize: 18, fontWeight: 'bold' },
 });
